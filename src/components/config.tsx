@@ -9,9 +9,10 @@ import { ReactComponent as JustifyLeft } from "../components/Icon/justifyLeft.sv
 import { ReactComponent as JustifyCenter } from "../components/Icon/justifyCenter.svg";
 import { ReactComponent as JustifyRight } from "../components/Icon/justfiyRight.svg";
 import { ReactComponent as UnderLine } from "../components/Icon/underlined.svg";
-import { ReactComponent as ColorPicker } from "../components/Icon/color.svg";
 import { ReactComponent as Redo } from "../components/Icon/redo.svg";
 import { ReactComponent as Undo } from "../components/Icon/undo.svg";
+import { Heading } from "./Heading";
+import FontColor from "./FontColor";
 
 const Space = styled.hr`
   height: 1.6rem;
@@ -21,6 +22,8 @@ const Space = styled.hr`
 `;
 
 export const menuConfig = [
+  <Heading id="heading" />,
+  <Space id="space" />,
   <Undo
     width={"100%"}
     height={"100%"}
@@ -38,6 +41,8 @@ export const menuConfig = [
     id="redo"
   />,
   <Space id="space" />,
+  <FontColor id="colorPicker" />,
+  <FontColor id="backgroundColor" />,
   <Bold
     width={"100%"}
     height={"100%"}
@@ -95,6 +100,4 @@ export const menuConfig = [
     `}
     id="justifyRight"
   />,
-  <Space id="space" />,
-  <ColorPicker width={"100%"} height={"100%"} id="colorPicker" />,
 ];

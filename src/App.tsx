@@ -11,6 +11,7 @@ function App() {
         contentBorderFocusColor=""
         defaultFontSize="14px"
         defaultFontColor=""
+        defaultWidth="10rem"
       />
     </div>
   );

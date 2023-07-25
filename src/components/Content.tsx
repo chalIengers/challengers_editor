@@ -1,26 +1,29 @@
 /** @jsxImportSource @emotion/react */
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import editorType from "./@types/type";
 
-export default function Content({
-  contentBorderColor,
-  contentBorderFocusColor,
-  defaultFontSize,
-  defaultFontColor,
-}: editorType) {
-  const changeTag = (event: React.KeyboardEvent) => {
-    if (event.keyCode === 13) {
-      console.log(event.keyCode);
-      document.execCommand("defaultParagraphSeparator", false, "p");
-    }
-  };
+export const Content = forwardRef(
+  (
+    {
+      contentBorderColor,
+      contentBorderFocusColor,
+      defaultFontSize,
+      defaultFontColor,
+    }: editorType,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
+    const changeTag = (event: React.KeyboardEvent) => {
+      if (event.keyCode === 13) {
+        document.execCommand("defaultParagraphSeparator", false, "p");
+      }
+    };
 
-  return (
-    <div
-      contentEditable={true}
-      css={css`
+    return (
+      <div
+        contentEditable={true}
+        css={css`
         border: none;
         width: 100%;
         height: 30rem;
@@ -49,7 +52,13 @@ export default function Content({
         }
     }
       `}
-      onKeyDown={(event) => changeTag(event)}
-    />
-  );
-}
+        // onKeyDown={(event) => changeTag(event)}
+        ref={ref}
+      />
+    );
+  }
+);
+
+Content.displayName = "Content";
+
+export default Content;
