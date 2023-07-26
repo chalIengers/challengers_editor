@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import Toolbar from "./components/Toolbar";
 import Content from "./components/Content";
 import editorType from "./components/@types/type";
+import ReactDOMServer from "react-dom/server";
 
 export default function Editor({
   contentBorderColor,
@@ -14,6 +15,18 @@ export default function Editor({
   defaultWidth,
 }: editorType) {
   const editorRef = useRef(null);
+  // const componentAsHTMLString = ReactDOMServer.renderToStaticMarkup(<Content />);
+  //   const iframeContent = `
+  //   <!DOCTYPE html>
+  //   <html>
+  //     <head>
+  //       <title>React Component in iframe</title>
+  //     </head>
+  //     <body>
+  //       ${componentAsHTMLString}
+  //     </body>
+  //   </html>
+  // `;
 
   return (
     <div
@@ -30,6 +43,7 @@ export default function Editor({
         defaultFontSize={defaultFontSize}
         ref={editorRef}
       />
+      {/* <iframe title="React Component" srcDoc={iframeContent} /> */}
     </div>
   );
 }

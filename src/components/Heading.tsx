@@ -10,9 +10,10 @@ import { ReactComponent as Arrow } from "../components/Icon/arrow.svg";
 let selection: any;
 let range: any;
 
-const HeadingBtn = ({ text, onClick }: headingType) => {
+const HeadingBtn = ({ id, text, onClick }: headingType) => {
   return (
     <button
+      id={id}
       type="button"
       css={css`
         width: 100%;
@@ -47,7 +48,9 @@ function HeadingContent({ editorRef, state, setState }: toolBarType) {
   const headingList = ["제목1", "제목2", "제목3", "본문1", "본문2", "본문3"];
 
   const test = (event: React.MouseEvent<HTMLButtonElement>) => {
-    document.execCommand("bold");
+    document.execCommand("styleWithCSS");
+    document.execCommand("fontSize", false, "8");
+    console.log(event.target);
     if (editorRef?.current) {
       editorRef.current.focus();
     }
@@ -94,7 +97,12 @@ function HeadingContent({ editorRef, state, setState }: toolBarType) {
       ></div>
       {headingList.map((item: string, key) => {
         return (
-          <HeadingBtn key={key} text={item} onClick={(event) => test(event)} />
+          <HeadingBtn
+            id={item}
+            key={key}
+            text={item}
+            onClick={(event) => test(event)}
+          />
         );
       })}
     </div>

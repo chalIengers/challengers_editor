@@ -20,4 +20,5 @@ export interface toolBarType {
 export interface headingType {
   text: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  id: string;
 }

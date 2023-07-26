@@ -23,6 +23,7 @@ export const Content = forwardRef(
     return (
       <div
         contentEditable={true}
+        dangerouslySetInnerHTML={{ __html: "<p><br/></p>" }}
         css={css`
         border: none;
         width: 100%;
@@ -50,9 +51,17 @@ export const Content = forwardRef(
         p {
           margin: 0;
         }
+
+        .selected {
+          background-color: #c8c8c8;
+          display: inline;
+          padding-bottom: 0.25rem;
+          padding-top: 0.25rem;
+        }
     }
       `}
-        // onKeyDown={(event) => changeTag(event)}
+        onKeyDown={(event) => changeTag(event)}
+        // onBlur={(event) => (event.target.style.userSelect = "none")}
         ref={ref}
       />
     );

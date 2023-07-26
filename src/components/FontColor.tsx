@@ -36,12 +36,39 @@ export default function FontColor({ id, editorRef }: toolBarType) {
       document.removeEventListener("click", (event) => {
         if (pickerRef.current) {
           if (!pickerRef.current.contains(event.target as Node)) {
+            window?.getSelection()?.removeAllRanges(); // 기존 선택 영역을 지웁니다.
             setModalState(false);
           }
         }
       });
     };
   }, []);
+
+  useEffect(() => {
+    if (modalState) {
+      const inputNode = document
+        .getElementsByClassName("block-picker")[0]
+        ?.getElementsByTagName("input")[0];
+
+      inputNode.addEventListener("input", function (event) {
+        event.stopPropagation();
+      });
+
+      //   inputNode.addEventListener("mousedown", function (event) {
+      //     // range.startContainer.parentNode.classList.add("selected");
+      //     document.addEventListener("selectstart", function (event) {
+      //       event.stopPropagation();
+      //     });
+      //   });
+
+      //   inputNode.addEventListener("blur", function () {
+      //     range.startContainer.parentNode.classList.remove("selected");
+      //     document.removeEventListener("selectstart", function (event) {
+      //       event.stopPropagation();
+      //     });
+      //   });
+    }
+  }, [modalState]);
 
   const pickerOn = () => {
     setModalState(true);
