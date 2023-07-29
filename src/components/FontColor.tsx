@@ -5,17 +5,9 @@ import { css } from "@emotion/react";
 import { ReactComponent as ColorPicker } from "../components/Icon/color.svg";
 import { ReactComponent as BackgroundColor } from "../components/Icon/backgroundColor.svg";
 import { toolBarType } from "./@types/type";
-import {
-  BlockPicker,
-  ColorPickerProps,
-  ColorResult,
-  TwitterPicker,
-} from "react-color";
+import { BlockPicker } from "react-color";
 import { IconDiv } from "./Toolbar";
 import { fadeUp } from "../styles/keyframes";
-
-let selection: any;
-let range: any;
 
 export default function FontColor({ id, editorRef }: toolBarType) {
   const [modalState, setModalState] = useState(false);
@@ -23,6 +15,16 @@ export default function FontColor({ id, editorRef }: toolBarType) {
   const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let editorDoc: Document | null | undefined;
+
+    if (editorRef?.current) {
+      editorDoc = (editorRef.current as HTMLIFrameElement).contentDocument;
+    }
+
+    editorDoc?.addEventListener("click", () => {
+      setModalState(false);
+    });
+
     document.addEventListener("click", (event) => {
       if (pickerRef.current) {
         if (!pickerRef.current.contains(event.target as Node)) {
@@ -33,6 +35,10 @@ export default function FontColor({ id, editorRef }: toolBarType) {
 
     // 이벤트 클린업
     return () => {
+      editorDoc?.removeEventListener("click", () => {
+        setModalState(false);
+      });
+
       document.removeEventListener("click", (event) => {
         if (pickerRef.current) {
           if (!pickerRef.current.contains(event.target as Node)) {
@@ -75,24 +81,37 @@ export default function FontColor({ id, editorRef }: toolBarType) {
     if (editorRef?.current) {
       editorRef.current.focus();
     }
-    selection = window.getSelection();
-    range = selection.getRangeAt(0);
+    // selection = window.getSelection();
+    // range = selection.getRangeAt(0);
   };
 
   const handleChangeColor = useCallback(
     (color: string) => {
       setColor(color);
-      let tmpRange = document.createRange();
-      tmpRange.setStart(range.startContainer, range.startOffset);
-      tmpRange.setEnd(range.endContainer, range.endOffset);
-      window?.getSelection()?.removeAllRanges(); // 기존 선택 영역을 지웁니다.
-      window?.getSelection()?.addRange(range); // 새로운 Range를 추가하여 선택합니다.
-      document.execCommand("styleWithCSS");
-      if (id === "colorPicker") {
-        document.execCommand("foreColor", false, color);
+      //   let tmpRange = document.createRange();
+      //   tmpRange.setStart(range.startContainer, range.startOffset);
+      //   tmpRange.setEnd(range.endContainer, range.endOffset);
+      //   window?.getSelection()?.removeAllRanges(); // 기존 선택 영역을 지웁니다.
+      //   window?.getSelection()?.addRange(range); // 새로운 Range를 추가하여 선택합니다.
+      let editorDoc: Document | null | undefined;
+
+      if (editorRef?.current) {
+        editorDoc = (editorRef.current as HTMLIFrameElement).contentDocument;
       }
-      if (id === "backgroundColor") {
-        document.execCommand("hilitecolor", false, color);
+      if (editorDoc) {
+        editorDoc.execCommand("styleWithCSS");
+        if (
+          window.editorID + "_" + id ===
+          window.editorID + "_" + "colorPicker"
+        ) {
+          editorDoc.execCommand("foreColor", false, color);
+        }
+        if (
+          window.editorID + "_" + id ===
+          window.editorID + "_" + "backgroundColor"
+        ) {
+          editorDoc.execCommand("hilitecolor", false, color);
+        }
       }
       setModalState(false);
     },
@@ -118,11 +137,13 @@ export default function FontColor({ id, editorRef }: toolBarType) {
 
   return (
     <div ref={pickerRef}>
-      <IconDiv onClick={pickerOn}>
-        {id === "colorPicker" && (
+      <IconDiv onClick={pickerOn} title={id}>
+        {window.editorID + "_" + id ===
+          window.editorID + "_" + "colorPicker" && (
           <ColorPicker width={"100%"} height={"100%"} id={id} />
         )}
-        {id === "backgroundColor" && (
+        {window.editorID + "_" + id ===
+          window.editorID + "_" + "backgroundColor" && (
           <BackgroundColor width={"100%"} height={"100%"} id={id} />
         )}
       </IconDiv>

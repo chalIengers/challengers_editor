@@ -7,13 +7,10 @@ import editorType, { headingType, toolBarType } from "./@types/type";
 import { fadeUp } from "../styles/keyframes";
 import { ReactComponent as Arrow } from "../components/Icon/arrow.svg";
 
-let selection: any;
-let range: any;
-
 const HeadingBtn = ({ id, text, onClick }: headingType) => {
   return (
     <button
-      id={id}
+      id={window.editorID + "_" + id}
       type="button"
       css={css`
         width: 100%;
@@ -32,6 +29,8 @@ const HeadingBtn = ({ id, text, onClick }: headingType) => {
         display: flex;
         justify-content: center;
         align-items: center;
+        font-family: "Pretendard-Regular";
+        color: #404040;
 
         &:hover {
           background-color: var(--grey200);
@@ -48,12 +47,48 @@ function HeadingContent({ editorRef, state, setState }: toolBarType) {
   const headingList = ["제목1", "제목2", "제목3", "본문1", "본문2", "본문3"];
 
   const test = (event: React.MouseEvent<HTMLButtonElement>) => {
-    document.execCommand("styleWithCSS");
-    document.execCommand("fontSize", false, "8");
-    console.log(event.target);
+    let editorDoc: Document | null | undefined;
+
     if (editorRef?.current) {
-      editorRef.current.focus();
+      editorDoc = (editorRef.current as HTMLIFrameElement).contentDocument;
     }
+
+    if (editorDoc) {
+      editorDoc.execCommand("styleWithCSS");
+
+      switch ((event.target as HTMLButtonElement).id) {
+        case window.editorID + "_" + "제목1":
+          editorDoc.execCommand("fontSize", false, "6");
+          break;
+        case window.editorID + "_" + "제목2":
+          editorDoc.execCommand("fontSize", false, "5");
+          break;
+        case window.editorID + "_" + "제목3":
+          editorDoc.execCommand("fontSize", false, "4");
+          break;
+        case window.editorID + "_" + "본문1":
+          editorDoc.execCommand("fontSize", false, "3");
+          break;
+        case window.editorID + "_" + "본문2":
+          editorDoc.execCommand("fontSize", false, "2");
+          break;
+        case window.editorID + "_" + "본문3":
+          editorDoc.execCommand("fontSize", false, "1");
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    if (editorRef?.current) {
+      const editorDoc = (editorRef.current as HTMLIFrameElement)
+        .contentDocument;
+      if (editorDoc) {
+        editorDoc.body.focus();
+      }
+    }
+
     if (setState) {
       setState(false);
     }
@@ -109,11 +144,21 @@ function HeadingContent({ editorRef, state, setState }: toolBarType) {
   );
 }
 
-export const Heading = ({ id, editorRef }: toolBarType) => {
+export const Heading = ({ id, editorRef, environmentColor }: toolBarType) => {
   const [modalState, setModalState] = useState(false);
   const headingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let editorDoc: Document | null | undefined;
+
+    if (editorRef?.current) {
+      editorDoc = (editorRef.current as HTMLIFrameElement).contentDocument;
+    }
+
+    editorDoc?.addEventListener("click", () => {
+      setModalState(false);
+    });
+
     document.addEventListener("click", (event) => {
       if (headingRef.current) {
         if (!headingRef.current.contains(event.target as Node)) {
@@ -124,6 +169,10 @@ export const Heading = ({ id, editorRef }: toolBarType) => {
 
     // 이벤트 클린업
     return () => {
+      editorDoc?.removeEventListener("click", () => {
+        setModalState(false);
+      });
+
       document.removeEventListener("click", (event) => {
         if (headingRef.current) {
           if (!headingRef.current.contains(event.target as Node)) {
@@ -159,30 +208,48 @@ export const Heading = ({ id, editorRef }: toolBarType) => {
       css={css`
         width: auto;
         position: relative;
+        padding-right: 0.3rem;
+        padding-left: 0.3rem;
       `}
       ref={headingRef}
     >
       <div
-        id={id}
         css={css`
           display: flex;
           justify-content: center;
           align-items: center;
           font-size: 0.8rem;
-          column-gap: 1.6rem;
+          column-gap: 0.7rem;
           cursor: pointer;
           width: 100%;
           box-sizing: border-box;
           padding-left: 1rem;
+          font-family: "Pretendard-Regular";
 
           svg {
             pointer-events: none;
           }
+
+          ${environmentColor === "white" &&
+          css`
+            color: #404040;
+            svg line {
+              stroke: #404040;
+            }
+          `}
+
+          ${environmentColor === "dark" &&
+          css`
+            color: white;
+            svg line {
+              stroke: white;
+            }
+          `}
         `}
         onMouseDown={(event) => modalFocus(event)}
       >
-        기본 값
-        <Arrow width={"0.8rem"} height={"0.8rem"} />
+        <span id={window.editorID + "_" + id}>본문2</span>
+        <Arrow width={"0.5rem"} height={"0.5rem"} />
       </div>
       <HeadingContent
         editorRef={editorRef}

@@ -17,8 +17,9 @@ import FontColor from "./FontColor";
 const Space = styled.hr`
   height: 1.6rem;
   margin: 0px;
+  border: solid 1px;
   border-color: var(--greyOpacity300);
-  border-radius: 5rem;
+  border-radius: 4rem;
 `;
 
 export const menuConfig = [
