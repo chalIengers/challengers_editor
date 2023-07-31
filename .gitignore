@@ -1,13 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# for npm lib
-src
-demo
-.babelrc
-webpack.config.js
-public
-tsconfig.json
-
 # dependencies
 /node_modules
 /.pnp
